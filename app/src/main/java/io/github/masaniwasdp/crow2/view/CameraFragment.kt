@@ -11,9 +11,7 @@ import io.github.masaniwasdp.crow2.R
 import io.github.masaniwasdp.crow2.application.IFilterCamera
 import io.github.masaniwasdp.crow2.application.IFilterCameraView
 import io.github.masaniwasdp.crow2.databinding.FragmentCameraBinding
-import org.opencv.android.BaseLoaderCallback
 import org.opencv.android.CameraBridgeViewBase
-import org.opencv.android.LoaderCallbackInterface
 import org.opencv.core.Mat
 
 /**
@@ -30,16 +28,6 @@ class CameraFragment : Fragment(), IFilterCameraView {
                 selectButton.setOnClickListener(selectButtonListener)
             }
 
-        loaderCallback = object : BaseLoaderCallback(requireActivity()) {
-            override fun onManagerConnected(status: Int) {
-                when (status) {
-                    LoaderCallbackInterface.SUCCESS -> binding?.cameraView?.enableView()
-
-                    else -> super.onManagerConnected(status)
-                }
-            }
-        }
-
         return binding!!.root
     }
 
@@ -53,9 +41,7 @@ class CameraFragment : Fragment(), IFilterCameraView {
         super.onResume()
 
         PermissionWrapper(requireActivity(), R.string.camera, Manifest.permission.CAMERA)
-            .request {
-                loaderCallback?.onManagerConnected(LoaderCallbackInterface.SUCCESS)
-            }
+            .request { binding?.cameraView?.enableView() }
     }
 
     override fun onPause() {
@@ -85,9 +71,6 @@ class CameraFragment : Fragment(), IFilterCameraView {
 
     /** La datuma deviga objekto. */
     private var binding: FragmentCameraBinding? = null
-
-    /** Callback funkcio kiu estos invokita kiam OpenCV estas ŝarĝita. */
-    private var loaderCallback: BaseLoaderCallback? = null
 
     /** Aŭskultanto de fotila vido. */
     private val cameraViewListener = object
