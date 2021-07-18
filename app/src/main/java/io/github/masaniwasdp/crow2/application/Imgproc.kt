@@ -12,7 +12,7 @@ import org.opencv.imgproc.Imgproc
  * @param dst Destino de inversigita bildo.
  */
 fun negate(src: Mat, dst: Mat) {
-    require(src.type() == CvType.CV_8UC4) { "The type of src must be CV_8UC4." }
+    require(src.type() == CvType.CV_8UC4) { "The type of src should be CV_8UC4." }
 
     Core.bitwise_not(src, dst)
 }
@@ -24,7 +24,7 @@ fun negate(src: Mat, dst: Mat) {
  * @param dst Destino de konvertita bildo.
  */
 fun grayscale(src: Mat, dst: Mat) {
-    require(src.type() == CvType.CV_8UC4) { "The type of src must be CV_8UC4." }
+    require(src.type() == CvType.CV_8UC4) { "The type of src should be CV_8UC4." }
 
     Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGBA2GRAY)
 }
@@ -36,7 +36,7 @@ fun grayscale(src: Mat, dst: Mat) {
  * @param dst Destino de konvertita bildo.
  */
 fun redFilter(src: Mat, dst: Mat) {
-    require(0.until(src.channels()).contains(0)) { "The index out of bounds." }
+    require(src.type() == CvType.CV_8UC4) { "The type of src should be CV_8UC4." }
 
     pickChannel(src, dst, 0)
 }
@@ -48,7 +48,7 @@ fun redFilter(src: Mat, dst: Mat) {
  * @param dst Destino de konvertita bildo.
  */
 fun greenFilter(src: Mat, dst: Mat) {
-    require(0.until(src.channels()).contains(1)) { "The index out of bounds." }
+    require(src.type() == CvType.CV_8UC4) { "The type of src should be CV_8UC4." }
 
     pickChannel(src, dst, 1)
 }
@@ -60,7 +60,7 @@ fun greenFilter(src: Mat, dst: Mat) {
  * @param dst Destino de konvertita bildo.
  */
 fun blueFilter(src: Mat, dst: Mat) {
-    require(0.until(src.channels()).contains(2)) { "The index out of bounds." }
+    require(src.type() == CvType.CV_8UC4) { "The type of src should be CV_8UC4." }
 
     pickChannel(src, dst, 2)
 }
@@ -73,7 +73,7 @@ fun blueFilter(src: Mat, dst: Mat) {
  * @param index Nombro de kanalo.
  */
 private fun pickChannel(src: Mat, dst: Mat, index: Int) {
-    require(0.until(src.channels()).contains(index)) { "The index out of bounds." }
+    require(0.until(src.channels()).contains(index)) { "The src doesn't have the channel." }
 
     (List(src.channels()) { null } as List<Mat?>).let {
         Core.split(src, it)
