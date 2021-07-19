@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Crow2</string>
-    <string name="ok">OK</string>
-    <string name="success">Savis la bildon.</string>
-    <string name="failed">Malsukcesis savi la bildon.</string>
-    <string name="camera">Se vi volas uzi ĉi tion, vi devas permesi la permeson de la fotilo.</string>
-    <string name="select_button">Butono elekti</string>
-</resources>
