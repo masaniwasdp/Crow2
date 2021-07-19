@@ -3,8 +3,8 @@ package io.github.masaniwasdp.crow2.application
 import android.graphics.Bitmap
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.android.Utils
-import org.opencv.core.CvType
 import org.opencv.core.Mat
+import java.io.Closeable
 
 /**
  * Filtrila fotilo.
@@ -15,50 +15,32 @@ import org.opencv.core.Mat
  */
 class FilterCamera(
     private val view: IFilterCameraView, private val store: IMediaStore
-) : IFilterCamera {
-    override fun initializeFrame(w: Int, h: Int) {
-        frame?.release()
-
-        frame = Mat(h, w, CvType.CV_8UC4)
-    }
-
-    override fun finaliseFrame() {
-        frame?.release()
-
-        frame = null
-    }
-
+) : IFilterCamera, Closeable {
     override fun updateFrame(frame: CameraBridgeViewBase.CvCameraViewFrame): Mat {
-        this.frame?.let {
-            when (filter) {
-                IFilterCamera.Filter.None -> frame.rgba().copyTo(it)
-                IFilterCamera.Filter.Negative -> negate(frame.rgba(), it)
-                IFilterCamera.Filter.Grayscale -> grayscale(frame.rgba(), it)
-                IFilterCamera.Filter.Red -> redFilter(frame.rgba(), it)
-                IFilterCamera.Filter.Green -> greenFilter(frame.rgba(), it)
-                IFilterCamera.Filter.Blue -> blueFilter(frame.rgba(), it)
-            }
-
-            return it
+        when (filter) {
+            IFilterCamera.Filter.None -> frame.rgba().copyTo(this.frame)
+            IFilterCamera.Filter.Negative -> negate(frame.rgba(), this.frame)
+            IFilterCamera.Filter.Grayscale -> grayscale(frame.rgba(), this.frame)
+            IFilterCamera.Filter.Red -> redFilter(frame.rgba(), this.frame)
+            IFilterCamera.Filter.Green -> greenFilter(frame.rgba(), this.frame)
+            IFilterCamera.Filter.Blue -> blueFilter(frame.rgba(), this.frame)
         }
 
-        return frame.rgba()
+        return this.frame
     }
 
     override fun saveFrame() {
-        frame?.let {
-            try {
-                Bitmap.createBitmap(it.cols(), it.rows(), Bitmap.Config.ARGB_8888)
-                    .let { x ->
-                        Utils.matToBitmap(it, x)
+        try {
+            Bitmap.createBitmap(frame.cols(), frame.rows(), Bitmap.Config.ARGB_8888)
+                .let {
+                    Utils.matToBitmap(frame, it)
 
-                        store.saveImage(x)
-                    }
+                    store.saveImage(it)
+                }
 
-                view.notifySuccess()
-            } catch (e: Exception) {
-                view.notifyFailed()
-            }
+            view.notifySuccess()
+        } catch (e: Exception) {
+            view.notifyFailed()
         }
     }
 
@@ -66,9 +48,13 @@ class FilterCamera(
         this.filter = filter
     }
 
-    /** Filtrilo de la fotilo. */
-    private var filter = IFilterCamera.Filter.None
+    override fun close() {
+        frame.release()
+    }
 
     /** Fotila kadro. */
-    private var frame: Mat? = null
+    private val frame = Mat()
+
+    /** Filtrilo de la fotilo. */
+    private var filter = IFilterCamera.Filter.None
 }

@@ -9,17 +9,6 @@ interface IFilterCamera {
     enum class Filter { None, Negative, Grayscale, Red, Green, Blue; }
 
     /**
-     * Inicializas la fotilan kadron.
-     *
-     * @param w Larĝeco de la kadro.
-     * @param h Alteco de la kadro.
-     */
-    fun initializeFrame(w: Int, h: Int)
-
-    /** Liberigas la fotilan kadron. */
-    fun finaliseFrame()
-
-    /**
      * Ĝisdatigas la fotilan kadron.
      *
      * @param frame La eniga fotila bildo.

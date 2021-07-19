@@ -14,7 +14,9 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             CameraFragment().let {
-                it.filterCamera = FilterCamera(it, MediaStore(contentResolver))
+                filterCamera = FilterCamera(it, MediaStore(contentResolver))
+
+                it.filterCamera = filterCamera
 
                 supportFragmentManager.beginTransaction().let { x ->
                     x.add(R.id.container, it)
@@ -23,6 +25,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        filterCamera?.close()
+    }
+
+    private var filterCamera: FilterCamera? = null
 
     companion object {
         init {

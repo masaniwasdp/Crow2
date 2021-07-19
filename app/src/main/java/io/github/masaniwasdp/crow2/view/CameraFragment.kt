@@ -69,19 +69,12 @@ class CameraFragment : Fragment(), IFilterCameraView {
     /** La filtrila fotilo. */
     var filterCamera: IFilterCamera? = null
 
-    /** La datuma deviga objekto. */
-    private var binding: FragmentCameraBinding? = null
-
     /** Aŭskultanto de fotila vido. */
     private val cameraViewListener = object
         : CameraBridgeViewBase.CvCameraViewListener2, View.OnClickListener {
-        override fun onCameraViewStarted(width: Int, height: Int) {
-            filterCamera?.initializeFrame(width, height)
-        }
+        override fun onCameraViewStarted(width: Int, height: Int) {}
 
-        override fun onCameraViewStopped() {
-            filterCamera?.finaliseFrame()
-        }
+        override fun onCameraViewStopped() {}
 
         override fun onCameraFrame(frame: CameraBridgeViewBase.CvCameraViewFrame): Mat {
             filterCamera?.let { return it.updateFrame(frame) }
@@ -100,6 +93,9 @@ class CameraFragment : Fragment(), IFilterCameraView {
             filterCamera?.useFilter(IFilterCamera.Filter.values()[it])
         }.show(requireActivity().supportFragmentManager, TAG_SELECT_FILTER)
     }
+
+    /** La datuma deviga objekto. */
+    private var binding: FragmentCameraBinding? = null
 }
 
 /** La etikedo de elekti efektojn. */
